@@ -115,6 +115,11 @@ body[data-page-name='visualizations/show'] .visualizations-controller,
     color: $hint;
   }
 
+  #legend {
+    background: white;
+    padding: 10px;
+  }
+
   .mainContent {
     padding: 0;  // Removes all the extra padding
     margin: 0; // flushes border
