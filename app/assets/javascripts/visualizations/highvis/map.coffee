@@ -276,6 +276,8 @@ $ ->
                 val: dp[index]
                 location: latlng
 
+            #console.log @heatPoints
+
             if @heatPoints[@HEATMAP_MARKERS]
               @heatPoints[@HEATMAP_MARKERS][groupIndex].push(latlng)
 
@@ -368,6 +370,8 @@ $ ->
         # Get current data
         dp = globals.getData(true, globals.configs.activeFilters)
 
+        console.log dp
+
         # Disable old heatmap (if there)
         if @heatmap?
           @heatmap.setMap null
@@ -409,6 +413,9 @@ $ ->
               # Finally, add together to get weight
               add = (a,b) -> a + b
               heats[i].weight = (offset + h.val) / neighbors.reduce(add, 0)
+
+              console.log heats[i]
+
 
           # Draw heatmap
           @heatmap = new google.maps.visualization.HeatmapLayer
