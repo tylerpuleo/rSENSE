@@ -370,6 +370,10 @@ $ ->
 
         # Disable old heatmap (if there)
         if @heatmap?
+          if($("#legend").length)
+            @gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].delete($("#legend")[0])
+          gmap = @gmap
+
           @heatmap.setMap null
           delete @heatmap
 
@@ -416,6 +420,23 @@ $ ->
             radius: @heatmapPixelRadius
             dissipating: true
           @heatmap.setMap(@gmap)
+
+          # Draw Map Legend
+          legendHbObj =
+            color: 'red'
+            weight: '5.2'
+
+          legendHb = HandlebarsTemplates['visualizations/map/map-legend'](legendHbObj)
+
+          if(!$("#legend").length)
+            $("body").append(legendHb)
+            @gmap.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($("#legend")[0]) 
+
+          console.log legendHb
+
+
+          
+
 
         # Set marker visibility
         for mg, i in @markers
