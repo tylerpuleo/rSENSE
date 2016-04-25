@@ -113,6 +113,83 @@ $ ->
       ###
       drawToolControls: (elapsedTime = false) ->
         super(elapsedTime)
+        pickerOpen = false
+        currValue = null
+        loadValue = null
+
+        formMin = $('input-min')
+
+        formInputMin = $('#x-axis-min')
+        formButtonMin = $('#min-image')
+
+
+
+        formButtonMin.on 'click', (e) ->
+          unless pickerOpen
+            dtPicker.open()
+
+
+        
+
+        dtPicker = formButtonMin.datetimepicker
+          autoClose: false
+          keyEventOn: (e) ->
+            #args.grid.onKeyDown.subscribe e
+          keyEventOff: (e) ->
+            #args.grid.onKeyDown.unsubscribe e
+          keyPress: (e) ->
+            e.stopImmediatePropagation()
+            e.keyCode
+          onOpen: ->
+            pickerOpen = true
+            formInputMin.focus()
+            currValue
+          onChange: (val) ->
+            currValue = val.format('YYYY/MM/DD HH:mm:ss')
+            formInputMin.val currValue
+          onKeys:
+            13: -> #enter
+              dtPicker.close()
+            27: -> #escape
+              dtPicker.close()
+          onClose: (val) ->
+            pickerOpen = false
+          hPosition: (w, h) ->
+          #  args.position.left + 2
+          vPosition: (w, h) ->
+           # args.position.bottom + 2
+
+        getInput: ->
+          formInputMin
+
+        destroy: ->
+          form.remove()
+          if pickerOpen
+            dtPicker.close()
+
+        focus: ->
+          formInputMin.focus()
+
+        isValueChanged: ->
+          formInputMin.val() != loadValue
+
+        serializeValue: ->
+          formInputMin.val()
+
+        loadValue: (item) ->
+          loadValue = item[args.column.field] || ''
+          formInputMin.val loadValue
+          currValue = loadValue
+
+        applyValue: (item, state) ->
+          item[args.column.field] = state
+
+        validate: ->
+          isDate = moment(formInputMin.val()).isValid()
+          if isDate
+            {valid: true, msg: null}
+          else
+            {valid: false, msg: 'Please enter a valid date'}
 
       ###
       Overwrite xAxis controls to only allow time fields
@@ -120,6 +197,9 @@ $ ->
       drawXAxisControls: ->
         fieldIndex = data.timeFields[0]
         super(fieldIndex, data.timeFields)
+
+
+
 
       saveFilters: (vis = 'timeline') ->
         super(vis)

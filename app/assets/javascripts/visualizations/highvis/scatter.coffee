@@ -433,7 +433,7 @@ $ ->
           yAxisMin = $('#y-axis-min').val()
           yAxisMax = $('#y-axis-max').val()
 
-          if isNaN(xAxisMin) or xAxisMin == ""
+          if xAxisMin == ""
             thereIsAFailure = true
             $('#x-axis-min').popover
               content: 'Please enter a valid number'
@@ -445,7 +445,7 @@ $ ->
               $('#x-axis-min').popover('destroy')
             , 3000
 
-          if isNaN(xAxisMax) or xAxisMax == ""
+          if xAxisMax == ""
             thereIsAFailure = true
             $('#x-axis-max').popover
               content: 'Please enter a valid number'
