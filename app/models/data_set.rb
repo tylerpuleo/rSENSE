@@ -12,6 +12,8 @@ class DataSet < ActiveRecord::Base
 
   validates :title, length: { maximum: 128 }
 
+  validate :name_is_clean
+
   has_many :media_objects
 
   belongs_to :project
@@ -24,6 +26,14 @@ class DataSet < ActiveRecord::Base
   before_validation :recalculate
 
   after_create :update_project
+
+  def name_is_clean
+    finder = BadWordDetector.new
+
+    if finder.find(name)
+      errors.add :base, 'This data set name is not allowed. Try again.'
+    end
+  end
 
   def update_project
     proj = Project.find(project_id)

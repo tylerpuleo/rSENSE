@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :user_id
   validates :title, length: { maximum: 128 }
   validate :media_object_exists
+  validate :title_is_clean
 
   before_save :summernote_media_objects
 
@@ -43,6 +44,14 @@ class Project < ActiveRecord::Base
   def media_object_exists
     if !featured_media_id.nil? and MediaObject.where(id: featured_media_id).blank?
       errors.add :base, 'That media object no longer exists.'
+    end
+  end
+
+  def title_is_clean
+    finder = BadWordDetector.new
+
+    if finder.find(title)
+      errors.add :base, 'This project name is not allowed. Try again.'
     end
   end
 

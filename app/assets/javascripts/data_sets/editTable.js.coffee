@@ -7,9 +7,10 @@ uploadSettings =
   error: (jqXHR, textStatus, errorThrown) ->
     $('.edit_table_add, .edit_table_save').removeClass 'disabled'
     $('.edit_table_save').text 'Save'
-
+    errors = JSON.parse jqXHR.responseText
     if uploadSettings.pageName == 'entry'
-      showError 'Data set titles must be unique to the project'
+      console.log(errors)
+      showError errors.error
     else
       showError 'An unknown error has occured'
   successEdit: (data, textStatus, jqXHR) ->

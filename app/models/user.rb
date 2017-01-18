@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
     message: 'can only contain letters, hyphens, single quotes, periods, and spaces.' }
 
   validates :password, presence: true, on: :create
+  validate :name_is_clean
 
   before_validation :sanitize_user
   before_save :summernote_media_objects
@@ -34,6 +35,14 @@ class User < ActiveRecord::Base
     html = Nokogiri.HTML(bio)
     if html.text.blank? and html.at_css('img').nil?
       self.bio = nil
+    end
+  end
+
+  def name_is_clean
+    finder = BadWordDetector.new
+
+    if finder.find(name)
+      errors.add :base, 'This username is not allowed. Try again.'
     end
   end
 

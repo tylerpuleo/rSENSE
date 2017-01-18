@@ -13,6 +13,7 @@ class Field < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :project_id, case_sensitive: false
   validates_uniqueness_of :refname, scope: :project_id, case_sensitive: false
 
+  validate :name_is_clean
   validate :validate_values
   validate :unique_name
   validate :reserved_names
@@ -22,6 +23,14 @@ class Field < ActiveRecord::Base
   alias_attribute :owner, :project
 
   default_scope { order('field_type ASC, created_at ASC') }
+
+  def name_is_clean
+    finder = BadWordDetector.new
+
+    if finder.find(name)
+      errors.add :base, 'This field name is not allowed. Try again.'
+    end
+  end
 
   def to_hash(recurse = true)
     h = {
